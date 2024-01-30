@@ -1,4 +1,4 @@
-package com.example.promedium.ui.theme
+package com.example.promedium.ui.theme.ui.theme
 
 import android.app.Activity
 import android.os.Build

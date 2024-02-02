@@ -13,6 +13,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -28,6 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.promedium.R
@@ -54,7 +56,7 @@ fun SemesterUi(viewModel: SemesterViewModel) {
 }
 
 @Composable
-fun BottomBar(viewModel: SemesterViewModel) {
+private fun BottomBar(viewModel: SemesterViewModel) {
     val paddingValues = PaddingValues(16.dp)
     Card(modifier = Modifier.fillMaxWidth()) {
         Row(
@@ -66,10 +68,15 @@ fun BottomBar(viewModel: SemesterViewModel) {
                 modifier = Modifier.padding(paddingValues)
             )
             val average = viewModel.getCreditAverage()
-            Text(
-                text = average,
-                modifier = Modifier.padding(paddingValues)
-            )
+            Card (
+                modifier= Modifier.padding(paddingValues),
+                shape = RoundedCornerShape(16.dp)
+            ){
+                Text(
+                    text = average,
+                    modifier = Modifier.padding(paddingValues),
+                )
+            }
         }
     }
 }
@@ -112,17 +119,18 @@ private fun Content(viewModel: SemesterViewModel) {
 @Composable
 private fun OnItemCreate(viewModel: SemesterViewModel) {
     val courses = viewModel.courses
-
-    courses.forEach { course -> CourseItem(course = course) }
+    courses.mapIndexed { index, course -> CourseItem(viewModel = viewModel, course = course, positionCourse = index) }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun CourseItem(course: Course) {
+private fun CourseItem(viewModel: SemesterViewModel, course: Course, positionCourse: Int) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
-        shape = RoundedCornerShape(12.dp)
+        shape = RoundedCornerShape(12.dp),
+        onClick = { viewModel.onClickCourse(position = positionCourse) }
     ) {
         Row {
             Text(

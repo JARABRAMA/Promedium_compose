@@ -1,5 +1,6 @@
 package com.example.promedium.ui.theme.ui.view_model
 
+import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.example.promedium.ui.theme.model.Course
@@ -11,10 +12,6 @@ class SemesterViewModel(private val navController: NavController) : ViewModel() 
     private val _coursesProvider = MutableStateFlow(CourseProvider)
 
     val courses = _coursesProvider.value.getCourses()
-
-    fun addCourse(course: Course) {
-        _coursesProvider.value.addCourse(course)
-    }
 
     fun navigateNewCourseScreen() {
         navController.navigate("new_course")
@@ -30,7 +27,16 @@ class SemesterViewModel(private val navController: NavController) : ViewModel() 
         courses.map { course ->
             creditAverage += course.credits!! * course.average()
         }
-        return (creditAverage / totalCredits).toString()
+        return if (totalCredits == 0){
+            "0"
+        } else{
+            (creditAverage / totalCredits).toString()
+        }
+    }
+
+    fun onClickCourse(position: Int) {
+        val positionCourse = position.toString()
+        navController.navigate("course/${positionCourse}")
     }
 
 

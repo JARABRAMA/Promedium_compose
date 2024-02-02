@@ -12,38 +12,25 @@ class NewCourseViewModel(private val navController: NavController): ViewModel() 
     private val _nameCourse = MutableStateFlow("")
     val nameCourse: StateFlow<String> = _nameCourse
 
-    private val _creditsCourse = MutableStateFlow<Int?>(null)
-
+    private val _creditsCourse = MutableStateFlow("")
+    val creditCourse: StateFlow<String> = _creditsCourse
     fun onNameChange(name: String) {
         _nameCourse.value = name
     }
     fun onCreditsChange(credits: String){
-        println("the number is $credits")
-        try {
-            _creditsCourse.value = credits.toInt()
-        } catch(_: NumberFormatException){
-            println("error de formato de numero")
-            println("no se pudo converter $credits a entero")
-            _creditsCourse.value = 1
-        }
+        _creditsCourse.value = credits
     }
-    fun creditValue(): String {
-        return if (_creditsCourse.value == null){
-            ""
-        } else {
-            _creditsCourse.value.toString()
-        }
-    }
+
     fun clearValues(){
         _nameCourse.value = ""
-        _creditsCourse.value =  null
+        _creditsCourse.value =  ""
     }
 
     fun addNewCourse(): Boolean {
         return try {
             val newCourse = Course(
                 name = _nameCourse.value,
-                credits = _creditsCourse.value,
+                credits = _creditsCourse.value.toInt(),
                 grades = mutableListOf()
             )
             CourseProvider.addCourse(newCourse)

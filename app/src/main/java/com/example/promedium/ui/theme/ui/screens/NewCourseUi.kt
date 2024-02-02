@@ -1,16 +1,19 @@
 package com.example.promedium.ui.theme.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -22,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDirection.Companion.Content
@@ -33,6 +37,9 @@ import com.example.promedium.ui.theme.ui.view_model.NewCourseViewModel
 @Composable
 fun NewCourseUi(viewModel: NewCourseViewModel) {
     Box(
+        modifier = Modifier.background(
+            color = MaterialTheme.colorScheme.background
+        ),
         content = {Content(viewModel = viewModel)}
     )
 
@@ -46,13 +53,16 @@ private fun Content(viewModel: NewCourseViewModel){
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(paddingValues = mediumPadding)
+        modifier = Modifier.padding(paddingValues = mediumPadding).fillMaxSize()
+
     ) {
         Text(
             text = stringResource(R.string.new_course),
             modifier = Modifier.fillMaxWidth(),
             fontSize = 20.sp,
-            textAlign = TextAlign.Center
+            fontStyle = FontStyle.Normal,
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.inversePrimary
         )
         CardFields(
             modifier = Modifier.padding(paddingValues = mediumPadding),

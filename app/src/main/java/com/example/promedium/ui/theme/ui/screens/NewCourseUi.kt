@@ -37,26 +37,37 @@ import com.example.promedium.ui.theme.ui.view_model.NewCourseViewModel
 @Composable
 fun NewCourseUi(viewModel: NewCourseViewModel) {
     val name by viewModel.nameCourse.collectAsState()
-
+    val credits by viewModel.creditCourse.collectAsState()
 
     Box(
         modifier = Modifier.background(
             color = MaterialTheme.colorScheme.background
         ),
         content = {
-            Content(
-                viewModel = viewModel,
-                name = name
-            ) {
-                viewModel.onNameChange(it)
-            }
+            ContentCard(
+                name = name,
+                onNameChange = {viewModel.onNameChange(it)},
+                credits = credits,
+                onCreditsChange = {viewModel.onCreditsChange(it)},
+                navigateSemesterScreen = {viewModel.navigateSemesterScreen()},
+                clearValues = {viewModel.clearValues()},
+                addNewCourse = {viewModel.addNewCourse()}
+            )
         }
     )
 
 }
 
 @Composable
-private fun Content(viewModel: NewCourseViewModel, name: String, onNameChange: (String) -> Unit) {
+private fun ContentCard(
+    name: String,
+    onNameChange: (String) -> Unit,
+    credits: String,
+    onCreditsChange: (String) -> Unit,
+    navigateSemesterScreen:  () -> Unit,
+    clearValues: () -> Unit,
+    addNewCourse: () -> Boolean
+) {
 
     Column(
         verticalArrangement = Arrangement.Center,
@@ -76,16 +87,17 @@ private fun Content(viewModel: NewCourseViewModel, name: String, onNameChange: (
         )
         CardFields(
             modifier = Modifier.padding(paddingValues = bigPadding),
-            viewModel = viewModel,
             onNameChange = onNameChange,
-            name = name
-        )
+            name = name,
+            credits = credits,
+            onCreditsChange = onCreditsChange
+            )
         Button(onClick = {
-            val createdCourse = viewModel.addNewCourse()
+            val createdCourse = addNewCourse()
 
             if (createdCourse) {
-                viewModel.navigateSemesterScreen()
-                viewModel.clearValues()
+                navigateSemesterScreen()
+                clearValues()
             } else {
                 //will appear a small screen announcing a warning
             }
@@ -98,9 +110,10 @@ private fun Content(viewModel: NewCourseViewModel, name: String, onNameChange: (
 @Composable
 fun CardFields(
     modifier: Modifier,
-    viewModel: NewCourseViewModel,
     name: String,
-    onNameChange: (String) -> Unit
+    onNameChange: (String) -> Unit,
+    credits: String,
+    onCreditsChange: (String) -> Unit
 ) {
     Card(
         modifier = modifier,
@@ -117,23 +130,26 @@ fun CardFields(
                 text = stringResource(id = R.string.new_credits_course),
                 modifier = Modifier.padding(PaddingValues(start = 25.dp))
             )
-            CreditsField(viewModel = viewModel)
+            CreditsField(
+                onCreditsChange = onCreditsChange,
+                credits = credits
+            )
         }
     }
 }
 
 @Composable
-fun CreditsField(viewModel: NewCourseViewModel) {
+fun CreditsField(credits: String, onCreditsChange: (String) -> Unit) {
     val paddingValues = PaddingValues(
         top = 25.dp,
         start = 25.dp,
         end = 25.dp,
         bottom = 25.dp
     )
-    val credits by viewModel.creditCourse.collectAsState()
+
     OutlinedTextField(
         value = credits,
-        onValueChange = { viewModel.onCreditsChange(it) },
+        onValueChange = { onCreditsChange(it) },
         shape = shapes.large,
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Number
@@ -142,7 +158,8 @@ fun CreditsField(viewModel: NewCourseViewModel) {
             cursorColor = Color.Black
         ),
         modifier = Modifier
-            .padding(paddingValues)
+            .padding(paddingValues),
+        singleLine = true
 
     )
 }
@@ -156,7 +173,6 @@ fun NameField(name: String, onNameChange: (String) -> Unit) {
         bottom = 7.dp
     )
 
-
     OutlinedTextField(
         value = name,
         onValueChange = { onNameChange(it) },
@@ -165,7 +181,8 @@ fun NameField(name: String, onNameChange: (String) -> Unit) {
             cursorColor = Color.Black
         ),
         modifier = Modifier
-            .padding(paddingValues)
+            .padding(paddingValues),
+        singleLine = true
     )
 }
 

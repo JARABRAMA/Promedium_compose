@@ -66,13 +66,13 @@ private fun BottomBar(viewModel: CourseViewModel) {
             .height(200.dp)
             .padding(16.dp)
     ) {
-        Column (
+        Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Bottom
-        ){
-            Row (
+        ) {
+            Row(
                 verticalAlignment = Alignment.CenterVertically
-            ){
+            ) {
                 Text(
                     text = stringResource(id = R.string.average),
                     textAlign = TextAlign.Start,
@@ -193,6 +193,5 @@ private fun TopBar(paddingValues: PaddingValues, viewModel: CourseViewModel) {
             modifier = Modifier.padding(paddingValues),
             fontSize = 26.sp
         )
-
     }
 }

@@ -28,32 +28,42 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDirection.Companion.Content
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.promedium.R
+import com.example.promedium.ui.theme.ui.theme.bigPadding
 import com.example.promedium.ui.theme.ui.view_model.NewCourseViewModel
 
 @Composable
 fun NewCourseUi(viewModel: NewCourseViewModel) {
+    val name by viewModel.nameCourse.collectAsState()
+
+
     Box(
         modifier = Modifier.background(
             color = MaterialTheme.colorScheme.background
         ),
-        content = {Content(viewModel = viewModel)}
+        content = {
+            Content(
+                viewModel = viewModel,
+                name = name
+            ) {
+                viewModel.onNameChange(it)
+            }
+        }
     )
 
 }
+
 @Composable
-private fun Content(viewModel: NewCourseViewModel){
-    val mediumPadding = PaddingValues(
-        horizontal = 16.dp,
-        vertical = 16.dp
-    )
+private fun Content(viewModel: NewCourseViewModel, name: String, onNameChange: (String) -> Unit) {
+
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(paddingValues = mediumPadding).fillMaxSize()
+        modifier = Modifier
+            .padding(paddingValues = bigPadding)
+            .fillMaxSize()
 
     ) {
         Text(
@@ -65,8 +75,10 @@ private fun Content(viewModel: NewCourseViewModel){
             color = MaterialTheme.colorScheme.inversePrimary
         )
         CardFields(
-            modifier = Modifier.padding(paddingValues = mediumPadding),
-            viewModel = viewModel
+            modifier = Modifier.padding(paddingValues = bigPadding),
+            viewModel = viewModel,
+            onNameChange = onNameChange,
+            name = name
         )
         Button(onClick = {
             val createdCourse = viewModel.addNewCourse()
@@ -75,7 +87,7 @@ private fun Content(viewModel: NewCourseViewModel){
                 viewModel.navigateSemesterScreen()
                 viewModel.clearValues()
             } else {
-                //will appear a small screen anouncing a warning
+                //will appear a small screen announcing a warning
             }
         }) {
             Text(text = stringResource(id = R.string.next))
@@ -84,7 +96,12 @@ private fun Content(viewModel: NewCourseViewModel){
 }
 
 @Composable
-fun CardFields(modifier: Modifier, viewModel: NewCourseViewModel) {
+fun CardFields(
+    modifier: Modifier,
+    viewModel: NewCourseViewModel,
+    name: String,
+    onNameChange: (String) -> Unit
+) {
     Card(
         modifier = modifier,
         elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
@@ -94,7 +111,7 @@ fun CardFields(modifier: Modifier, viewModel: NewCourseViewModel) {
                 text = stringResource(id = R.string.new_name_course),
                 modifier = Modifier.padding(PaddingValues(start = 25.dp, top = 25.dp))
             )
-            NameField(viewModel = viewModel)
+            NameField(name = name, onNameChange = onNameChange) // this is the field of name item
             Spacer(modifier = Modifier.padding(PaddingValues(20.dp)))
             Text(
                 text = stringResource(id = R.string.new_credits_course),
@@ -131,18 +148,18 @@ fun CreditsField(viewModel: NewCourseViewModel) {
 }
 
 @Composable
-fun NameField(viewModel: NewCourseViewModel) {
+fun NameField(name: String, onNameChange: (String) -> Unit) {
     val paddingValues = PaddingValues(
         top = 25.dp,
         start = 25.dp,
         end = 25.dp,
         bottom = 7.dp
     )
-    val name by viewModel.nameCourse.collectAsState()
+
 
     OutlinedTextField(
         value = name,
-        onValueChange = { viewModel.onNameChange(it) },
+        onValueChange = { onNameChange(it) },
         shape = shapes.large,
         colors = TextFieldDefaults.colors(
             cursorColor = Color.Black

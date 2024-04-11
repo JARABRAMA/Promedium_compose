@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.promedium.R
 import com.example.promedium.ui.theme.model.Course
+import com.example.promedium.ui.theme.ui.screens.comon.TopBar
 import com.example.promedium.ui.theme.ui.view_model.SemesterViewModel
 
 @Composable
@@ -50,7 +51,7 @@ fun SemesterUi(viewModel: SemesterViewModel) {
         },
         floatingActionButton = { Fab(viewModel = viewModel) },
         floatingActionButtonPosition = FabPosition.End,
-        topBar = { TopBar() },
+        topBar = { TopBar(stringResource(id = R.string.app_name)) },
         bottomBar = { BottomBar(viewModel = viewModel) }
     )
 
@@ -59,7 +60,9 @@ fun SemesterUi(viewModel: SemesterViewModel) {
 @Composable
 private fun BottomBar(viewModel: SemesterViewModel) {
     val paddingValues = PaddingValues(16.dp)
-    Card(modifier = Modifier.fillMaxWidth().fillMaxHeight( fraction = 0.2f)) {
+    Card(modifier = Modifier
+        .fillMaxWidth()
+        .fillMaxHeight(fraction = 0.2f)) {
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
@@ -147,24 +150,5 @@ private fun CourseItem(viewModel: SemesterViewModel, course: Course, positionCou
 
             }
         }
-    }
-}
-
-@Composable
-private fun TopBar() {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp),
-        shape = RoundedCornerShape(16.dp),
-        ) {
-        Text(
-            text = stringResource(id = R.string.app_name),
-            textAlign = TextAlign.Center,
-            fontSize = 26.sp,
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth()
-        )
     }
 }

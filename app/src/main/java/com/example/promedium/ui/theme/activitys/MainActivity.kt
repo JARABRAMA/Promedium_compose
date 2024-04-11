@@ -13,9 +13,11 @@ import androidx.navigation.navArgument
 import com.example.promedium.ui.theme.ui.theme.PromediumTheme
 import com.example.promedium.ui.theme.ui.screens.CourseUi
 import com.example.promedium.ui.theme.ui.screens.NewCourseUi
+import com.example.promedium.ui.theme.ui.screens.NewGradeUi
 import com.example.promedium.ui.theme.ui.screens.SemesterUi
 import com.example.promedium.ui.theme.ui.view_model.CourseViewModel
 import com.example.promedium.ui.theme.ui.view_model.NewCourseViewModel
+import com.example.promedium.ui.theme.ui.view_model.NewGradeViewModel
 import com.example.promedium.ui.theme.ui.view_model.SemesterViewModel
 
 class MainActivity : ComponentActivity() {
@@ -45,6 +47,15 @@ class MainActivity : ComponentActivity() {
                         val courseViewModel = CourseViewModel(navController, position!!)
                         CourseUi(viewModel = courseViewModel)
 
+                    }
+                    composable(
+                        route = "new_grade",
+                        arguments = listOf(navArgument("positionCourse") {NavType.IntType})
+                    ){
+                        val position =
+                            it.arguments?.getInt("positionCourse")
+                        val newGradeViewModel = NewGradeViewModel(navController, position!!)
+                        NewGradeUi()
                     }
                 }
             }

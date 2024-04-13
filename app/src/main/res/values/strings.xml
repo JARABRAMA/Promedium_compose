@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Promedium</string>
     <string name="new_course">New Course</string>
-    <string name="new_name_course">write the name of your course</string>
-    <string name="new_credits_course">write the credis of your course</string>
+    <string name="new_name_course">Write the name of your course</string>
+    <string name="new_credits_course">Write the credits of your course</string>
     <string name="next">next</string>
     <string name="average">"Average: "</string>
 

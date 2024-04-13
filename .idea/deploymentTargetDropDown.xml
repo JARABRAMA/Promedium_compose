@@ -2,13 +2,13 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="TopBar">
+      <entry key="ScreenNewCourse">
         <State />
       </entry>
       <entry key="app">
         <State />
       </entry>
-      <entry key="preview">
+      <entry key="screenNewCourse">
         <State />
       </entry>
     </value>

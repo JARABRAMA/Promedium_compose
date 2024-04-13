@@ -6,11 +6,11 @@ class CourseProvider {
 
 
     companion object {
-        // creacion de una lista mutable que guarde los valores de nuestro object
+        // creation de una lista mutable que guarde los valores de nuestro object
         private val courses: MutableList<Course> = mutableListOf(
             Course("Math", 3, mutableListOf(
                 Grade(
-                    "first Parcial",
+                    "first Partial",
                     4.8,
                     25.0
                 )

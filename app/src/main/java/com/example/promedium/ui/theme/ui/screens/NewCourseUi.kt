@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -31,7 +30,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.promedium.R
+import com.example.promedium.ui.theme.ui.screens.comon.MyTextField
 import com.example.promedium.ui.theme.ui.theme.bigPadding
+import com.example.promedium.ui.theme.ui.theme.extraLargePadding
+import com.example.promedium.ui.theme.ui.theme.mediumPadding
 import com.example.promedium.ui.theme.ui.view_model.NewCourseViewModel
 
 @Composable
@@ -46,12 +48,12 @@ fun NewCourseUi(viewModel: NewCourseViewModel) {
         content = {
             ContentCard(
                 name = name,
-                onNameChange = {viewModel.onNameChange(it)},
+                onNameChange = { viewModel.onNameChange(it) },
                 credits = credits,
-                onCreditsChange = {viewModel.onCreditsChange(it)},
-                navigateSemesterScreen = {viewModel.navigateSemesterScreen()},
-                clearValues = {viewModel.clearValues()},
-                addNewCourse = {viewModel.addNewCourse()}
+                onCreditsChange = { viewModel.onCreditsChange(it) },
+                navigateSemesterScreen = { viewModel.navigateSemesterScreen() },
+                clearValues = { viewModel.clearValues() },
+                addNewCourse = { viewModel.addNewCourse() }
             )
         }
     )
@@ -64,7 +66,7 @@ private fun ContentCard(
     onNameChange: (String) -> Unit,
     credits: String,
     onCreditsChange: (String) -> Unit,
-    navigateSemesterScreen:  () -> Unit,
+    navigateSemesterScreen: () -> Unit,
     clearValues: () -> Unit,
     addNewCourse: () -> Boolean
 ) {
@@ -91,7 +93,7 @@ private fun ContentCard(
             name = name,
             credits = credits,
             onCreditsChange = onCreditsChange
-            )
+        )
         Button(onClick = {
             val createdCourse = addNewCourse()
 
@@ -122,47 +124,24 @@ fun CardFields(
         Column(modifier = modifier) {
             Text(
                 text = stringResource(id = R.string.new_name_course),
-                modifier = Modifier.padding(PaddingValues(start = 25.dp, top = 25.dp))
+                modifier = Modifier.padding(extraLargePadding)
             )
             NameField(name = name, onNameChange = onNameChange) // this is the field of name item
-            Spacer(modifier = Modifier.padding(PaddingValues(20.dp)))
+            Spacer(modifier = Modifier.padding(extraLargePadding))
             Text(
                 text = stringResource(id = R.string.new_credits_course),
-                modifier = Modifier.padding(PaddingValues(start = 25.dp))
+                modifier = Modifier.padding(extraLargePadding)
             )
-            CreditsField(
-                onCreditsChange = onCreditsChange,
-                credits = credits
+            MyTextField(
+                value = credits,
+                onValueChange = onCreditsChange,
+                keyboardType = KeyboardType.Number,
+                paddingValues = mediumPadding
             )
         }
     }
 }
 
-@Composable
-fun CreditsField(credits: String, onCreditsChange: (String) -> Unit) {
-    val paddingValues = PaddingValues(
-        top = 25.dp,
-        start = 25.dp,
-        end = 25.dp,
-        bottom = 25.dp
-    )
-
-    OutlinedTextField(
-        value = credits,
-        onValueChange = { onCreditsChange(it) },
-        shape = shapes.large,
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Number
-        ),
-        colors = TextFieldDefaults.colors(
-            cursorColor = Color.Black
-        ),
-        modifier = Modifier
-            .padding(paddingValues),
-        singleLine = true
-
-    )
-}
 
 @Composable
 fun NameField(name: String, onNameChange: (String) -> Unit) {

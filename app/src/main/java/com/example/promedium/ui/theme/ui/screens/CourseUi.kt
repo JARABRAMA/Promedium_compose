@@ -9,15 +9,12 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
-import androidx.compose.material3.FabPosition
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -33,67 +30,87 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.example.promedium.R
 import com.example.promedium.ui.theme.model.Course
 import com.example.promedium.ui.theme.model.Grade
+import com.example.promedium.ui.theme.ui.screens.comon.TopBar
+import com.example.promedium.ui.theme.ui.theme.bigPadding
+import com.example.promedium.ui.theme.ui.theme.mediumPadding
+import com.example.promedium.ui.theme.ui.theme.thinPadding
 import com.example.promedium.ui.theme.ui.view_model.CourseViewModel
-import com.example.promedium.ui.theme.ui.view_model.SemesterViewModel
 
 @Composable
 fun CourseUi(viewModel: CourseViewModel) {
-    val paddingValues = PaddingValues(16.dp)
+    val position = viewModel.getPosition()
+    val course by viewModel.course.collectAsState()
+
     Scaffold(
-        topBar = { TopBar(paddingValues, viewModel = viewModel) },
-        floatingActionButtonPosition = FabPosition.Center,
+        topBar = { TopBar(title = course.name, textAlign = TextAlign.Start) },
         content = {
             GradesBox(
                 paddingValues = it,
                 viewModel = viewModel
             )
         },
-        bottomBar = { BottomBar(viewModel = viewModel) }
+        bottomBar = {
+            CourseButtonBar(
+                position = position,
+                onNewGrade = { viewModel.onNewGrade(it) },
+                course = course
+            )
+        }
     )
 }
 
 @Composable
-private fun BottomBar(viewModel: CourseViewModel) {
-    val course by viewModel.course.collectAsState()
+private fun CourseButtonBar(position: Int, onNewGrade: (Int) -> Unit, course: Course) {
+
     Card(
         shape = RoundedCornerShape(20),
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp)
-            .padding(16.dp)
+            .fillMaxHeight(0.2f)
+            .padding(bigPadding)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Bottom
+            modifier = Modifier
+                .padding(mediumPadding)
+                .fillMaxWidth()
+                .fillMaxHeight()
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = stringResource(id = R.string.average),
-                    textAlign = TextAlign.Start,
-                    modifier = Modifier.padding(8.dp)
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .padding(thinPadding)
                 )
                 Text(
                     text = course.average().toString(),
                     textAlign = TextAlign.End,
-                    modifier = Modifier.padding(8.dp)
+                    modifier = Modifier
+                        .padding(thinPadding)
                 )
             }
             Button(
-                onClick = { viewModel.onNewGrade() },
+                onClick = { onNewGrade(position) },
                 shape = CircleShape,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier
+                    .padding(16.dp)
+                    .height(IntrinsicSize.Max)
+                    .width((IntrinsicSize.Max))
             ) {
                 Icon(painter = painterResource(R.drawable.add), contentDescription = "new grade")
             }
         }
     }
 }
+
+
+
 
 @Composable
 private fun GradesBox(paddingValues: PaddingValues, viewModel: CourseViewModel) {
@@ -109,7 +126,7 @@ private fun GradesBox(paddingValues: PaddingValues, viewModel: CourseViewModel) 
             .height(0.12f.dp),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.onPrimary
+            containerColor = MaterialTheme.colorScheme.primary
         )
 
     ) {
@@ -175,23 +192,3 @@ fun GradeItem(grade: Grade, paddingValues: PaddingValues) {
     }
 }
 
-@Composable
-private fun TopBar(paddingValues: PaddingValues, viewModel: CourseViewModel) {
-    val course by viewModel.course.collectAsState()
-
-    Card(
-        modifier = Modifier
-            .padding(paddingValues)
-            .fillMaxWidth(),
-
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.onPrimary
-        )
-    ) {
-        Text(
-            text = course.name, // Name of the course
-            modifier = Modifier.padding(paddingValues),
-            fontSize = 26.sp
-        )
-    }
-}

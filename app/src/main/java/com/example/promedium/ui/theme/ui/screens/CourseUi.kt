@@ -31,7 +31,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.promedium.R
-import com.example.promedium.ui.theme.model.Course
 import com.example.promedium.ui.theme.model.Grade
 import com.example.promedium.ui.theme.ui.screens.comon.TopBar
 import com.example.promedium.ui.theme.ui.theme.bigPadding
@@ -56,14 +55,14 @@ fun CourseUi(viewModel: CourseViewModel) {
             CourseButtonBar(
                 position = position,
                 onNewGrade = { viewModel.onNewGrade(it) },
-                course = course
+                average = course.average().toString()
             )
         }
     )
 }
 
 @Composable
-private fun CourseButtonBar(position: Int, onNewGrade: (Int) -> Unit, course: Course) {
+private fun CourseButtonBar(position: Int, onNewGrade: (Int) -> Unit, average: String) {
 
     Card(
         shape = RoundedCornerShape(20),
@@ -89,7 +88,7 @@ private fun CourseButtonBar(position: Int, onNewGrade: (Int) -> Unit, course: Co
                         .padding(thinPadding)
                 )
                 Text(
-                    text = course.average().toString(),
+                    text = average,
                     textAlign = TextAlign.End,
                     modifier = Modifier
                         .padding(thinPadding)
@@ -108,8 +107,6 @@ private fun CourseButtonBar(position: Int, onNewGrade: (Int) -> Unit, course: Co
         }
     }
 }
-
-
 
 
 @Composable

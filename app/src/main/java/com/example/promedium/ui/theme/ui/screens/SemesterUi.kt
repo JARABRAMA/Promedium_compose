@@ -39,13 +39,13 @@ import com.example.promedium.ui.theme.ui.view_model.SemesterViewModel
 
 @Composable
 fun SemesterUi(viewModel: SemesterViewModel) {
-
+    val courses = viewModel.courses
     Scaffold(
-        content = {
+        content = {it ->
             Box(modifier = Modifier
                 .padding(it)
                 .fillMaxSize(),
-                content = { Content(viewModel = viewModel) }
+                content = { Content(courses){ int -> viewModel.onClickCourse(int)} }
             )
         },
         topBar = { TopBar(stringResource(id = R.string.app_name), TextAlign.Center) },
@@ -60,7 +60,6 @@ fun SemesterUi(viewModel: SemesterViewModel) {
 
 @Composable
 private fun SemesterButtonBar(getCreditAverage: () -> String, onNewCourse: () -> Unit) {
-
     Card(
         shape = RoundedCornerShape(20),
         modifier = Modifier
@@ -102,32 +101,42 @@ private fun SemesterButtonBar(getCreditAverage: () -> String, onNewCourse: () ->
 
 
 @Composable
-private fun Content(viewModel: SemesterViewModel) {
+private fun Content(courses: MutableList<Course>, onClickCourse: (Int) -> Unit) {
     val state = rememberScrollState()
 
-    Surface(
-        shape = RoundedCornerShape(20.dp),
-        color = MaterialTheme.colorScheme.primary,
-        modifier = Modifier.padding(16.dp)
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxSize(),
     ) {
-
-        Column(
+        Surface(
+            shape = RoundedCornerShape(20.dp),
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier
-                .padding(16.dp)
-                .verticalScroll(state = state),
+                .fillMaxWidth(1f)
+                .fillMaxHeight(1f)
+                .padding(bigPadding)
         ) {
-            OnItemCreate(viewModel = viewModel)
-        }
 
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .verticalScroll(state = state),
+            ) {
+                OnItemCreate(
+                    onClickCourse = onClickCourse,
+                    courses =  courses
+                )
+            }
+
+        }
     }
 }
 
 @Composable
-private fun OnItemCreate(viewModel: SemesterViewModel) {
-    val courses = viewModel.courses
+private fun OnItemCreate(courses: MutableList<Course>, onClickCourse: (Int) -> Unit) {
     courses.mapIndexed { index, course ->
         CourseItem(
-            viewModel = viewModel,
+            onClickCourse = onClickCourse,
             course = course,
             positionCourse = index
         )
@@ -135,13 +144,14 @@ private fun OnItemCreate(viewModel: SemesterViewModel) {
 }
 
 @Composable
-private fun CourseItem(viewModel: SemesterViewModel, course: Course, positionCourse: Int) {
+private fun CourseItem(onClickCourse: (Int) -> Unit, course: Course, positionCourse: Int) {
+    val position: Int = positionCourse
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
         shape = RoundedCornerShape(12.dp),
-        onClick = { viewModel.onClickCourse(position = positionCourse) }
+        onClick = { onClickCourse(position) }
     ) {
         Row {
             Text(

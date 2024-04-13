@@ -31,7 +31,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.promedium.R
-import com.example.promedium.ui.theme.model.Course
 import com.example.promedium.ui.theme.model.Grade
 import com.example.promedium.ui.theme.ui.screens.comon.TopBar
 import com.example.promedium.ui.theme.ui.theme.bigPadding

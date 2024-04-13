@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.promedium.R
 import com.example.promedium.ui.theme.model.Course
+import com.example.promedium.ui.theme.ui.screens.comon.AddButton
 import com.example.promedium.ui.theme.ui.screens.comon.TopBar
 import com.example.promedium.ui.theme.ui.view_model.SemesterViewModel
 
@@ -49,7 +50,7 @@ fun SemesterUi(viewModel: SemesterViewModel) {
                 content = { Content(viewModel = viewModel) }
             )
         },
-        floatingActionButton = { Fab(viewModel = viewModel) },
+        floatingActionButton = { AddButton{viewModel.navigateNewCourseScreen()}},
         floatingActionButtonPosition = FabPosition.End,
         topBar = { TopBar(stringResource(id = R.string.app_name)) },
         bottomBar = { BottomBar(viewModel = viewModel) }
@@ -85,19 +86,6 @@ private fun BottomBar(viewModel: SemesterViewModel) {
     }
 }
 
-@Composable
-private fun Fab(viewModel: SemesterViewModel) {
-    FloatingActionButton(
-        onClick = { viewModel.navigateNewCourseScreen() },
-        contentColor = Color.Black,
-        content = {
-            Icon(
-                painter = painterResource(id = R.drawable.add),
-                contentDescription = "new course"
-            )
-        }
-    )
-}
 
 @Composable
 private fun Content(viewModel: SemesterViewModel) {

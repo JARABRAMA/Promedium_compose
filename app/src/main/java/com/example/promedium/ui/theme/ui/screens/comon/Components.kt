@@ -14,12 +14,13 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.promedium.ui.theme.ui.theme.bigPadding
+import com.example.promedium.ui.theme.ui.theme.bigSize
+import com.example.promedium.ui.theme.ui.theme.extraLargePadding
 
 @Composable
 fun TopBar(title: String, textAlign: TextAlign) {
@@ -31,15 +32,17 @@ fun TopBar(title: String, textAlign: TextAlign) {
         shape = RoundedCornerShape(16.dp),
     ) {
         Text(
+            fontWeight = FontWeight.Bold,
             text = title,
             textAlign = textAlign,
-            fontSize = 26.sp,
+            fontSize = bigSize,
             modifier = Modifier
-                .padding(bigPadding)
+                .padding(extraLargePadding)
                 .fillMaxWidth()
         )
     }
 }
+
 
 @Composable
 fun MyTextField(

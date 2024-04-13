@@ -12,6 +12,7 @@ class NewCourseViewModel(private val navController: NavController): ViewModel() 
     private val _nameCourse = MutableStateFlow("")
     val nameCourse: StateFlow<String> = _nameCourse
 
+
     private val _creditsCourse = MutableStateFlow("")
     val creditCourse: StateFlow<String> = _creditsCourse
     fun onNameChange(name: String) {

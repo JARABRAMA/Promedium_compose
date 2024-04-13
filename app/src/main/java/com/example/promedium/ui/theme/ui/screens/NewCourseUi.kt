@@ -31,24 +31,6 @@ import com.example.promedium.ui.theme.ui.theme.bigSize
 import com.example.promedium.ui.theme.ui.theme.mediumPadding
 import com.example.promedium.ui.theme.ui.view_model.NewCourseViewModel
 
-
-@Composable
-@Preview
-fun ScreenNewCourse() {
-    val j: () -> Boolean = { true }
-    ContentCard(
-        name = "enter the name",
-        onNameChange = {},
-        credits = "3",
-        onCreditsChange = {},
-        navigateSemesterScreen = { /*TODO*/ },
-        clearValues = { /*TODO*/ },
-
-        ) {
-        j()
-    }
-}
-
 @Composable
 fun NewCourseUi(viewModel: NewCourseViewModel) {
     val name by viewModel.nameCourse.collectAsState()

@@ -56,14 +56,14 @@ fun CourseUi(viewModel: CourseViewModel) {
             CourseButtonBar(
                 position = position,
                 onNewGrade = { viewModel.onNewGrade(it) },
-                course = course
+                average = course.average().toString()
             )
         }
     )
 }
 
 @Composable
-private fun CourseButtonBar(position: Int, onNewGrade: (Int) -> Unit, course: Course) {
+private fun CourseButtonBar(position: Int, onNewGrade: (Int) -> Unit, average: String) {
 
     Card(
         shape = RoundedCornerShape(20),
@@ -89,7 +89,7 @@ private fun CourseButtonBar(position: Int, onNewGrade: (Int) -> Unit, course: Co
                         .padding(thinPadding)
                 )
                 Text(
-                    text = course.average().toString(),
+                    text = average,
                     textAlign = TextAlign.End,
                     modifier = Modifier
                         .padding(thinPadding)
@@ -108,8 +108,6 @@ private fun CourseButtonBar(position: Int, onNewGrade: (Int) -> Unit, course: Co
         }
     }
 }
-
-
 
 
 @Composable

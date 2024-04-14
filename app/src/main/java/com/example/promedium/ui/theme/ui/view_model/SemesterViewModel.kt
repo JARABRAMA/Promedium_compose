@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 class SemesterViewModel(private val navController: NavController) : ViewModel() {
 
     private val _coursesProvider = MutableStateFlow(CourseProvider)
-
     val courses = _coursesProvider.value.getCourses()
 
     fun navigateNewCourseScreen() {

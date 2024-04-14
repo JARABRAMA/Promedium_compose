@@ -2,6 +2,7 @@ package com.example.promedium.ui.theme.repository.impl
 
 import com.example.promedium.ui.theme.model.Course
 import com.example.promedium.ui.theme.model.Grade
+import com.example.promedium.ui.theme.model.SEPARATOR
 import com.example.promedium.ui.theme.repository.SemesterRepository
 import java.io.BufferedWriter
 import java.io.File
@@ -9,7 +10,7 @@ import java.io.FileWriter
 import java.io.IOException
 
 class FileBasedRepositoryImpl : SemesterRepository {
-    private val fileAddress: String = "app/src/main/res/files "
+    private val fileAddress: String = "app/src/main/res/files/courses.txt"
     override fun findAll(): MutableList<Course> {
         val courses: MutableList<Course> = mutableListOf()
         val file = File(fileAddress)
@@ -34,17 +35,17 @@ class FileBasedRepositoryImpl : SemesterRepository {
     }
 
     private fun buildCourse(line: String): Course {
-        val course: List<String> = line.split(",")
+        val course: List<String> = line.split(SEPARATOR)
         val grades: MutableList<Grade> = gradesFileToList(course[3])
         return Course(name = course[0], credits = course[2].toInt(), grades = grades)
     }
 
     private fun buildGrade(it: String): Grade {
-        val grade = it.split(",")
+        val grade = it.split(SEPARATOR)
         return Grade(
             name = grade[0],
-            percentage = grade[1].toDouble(),
-            qualification = grade[2].toDouble()
+            percentage = grade[2].toDouble(),
+            qualification = grade[1].toDouble()
         )
     }
 

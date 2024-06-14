@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Promedium</string>
+    <string name="course">Course: </string>
+    <string name="credits">Credits: </string>
+    <string name="name_course_placeholder">Name of the course</string>
+    <string name="credits_placeholder">Credits of the course</string>
+    <string name="save">Save</string>
+</resources>

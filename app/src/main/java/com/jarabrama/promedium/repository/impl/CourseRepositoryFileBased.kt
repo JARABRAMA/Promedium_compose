@@ -1,99 +1,87 @@
 package com.jarabrama.promedium.repository.impl
 
+import android.content.Context
 import android.util.Log
 
 import com.jarabrama.promedium.model.Course
 import com.jarabrama.promedium.repository.CourseRepository
+import kotlinx.coroutines.flow.Flow
 import java.io.File
 import java.io.FileOutputStream
 import java.io.FileInputStream
 import java.io.IOException
 import java.lang.Integer.parseInt
 
-class CourseRepositoryFileBased(private val fileName: String, private val separator: String) :
-    CourseRepository {
-    private lateinit var file: File
+class CourseRepositoryFileBased(private val context: Context) : CourseRepository {
+    private val file: String = "courses.txt"
+    private val separator: String = "|"
 
     init {
-        try {
-            file = File(fileName)
-            if (!file.exists()) {
+        val file = File(context.filesDir, file)
+        if (!file.exists()) {
+            try {
                 file.createNewFile()
+            } catch (e: IOException) {
+              Log.e("CourseRepositoryFileBased: creating", e.message, e)
             }
-        } catch (e: IOException) {
-            e.message?.let { Log.e("ERROR", it) }
         }
+    }
+
+    private fun toCourse(str: String): Course {
+        val parts = str.split(separator)
+        return Course(parseInt(parts[0]), parts[1], parseInt(parts[2]))
     }
 
     override fun findAll(): List<Course> {
-        val courses: MutableList<Course> = mutableListOf();
+        val courses = mutableListOf<Course>()
+        val file = File(context.filesDir, file)
+
         try {
-            val content: List<String>
-            FileInputStream(file).use { fileInputStream ->
-                fileInputStream.bufferedReader().use { bufferedReader ->
-                    content = bufferedReader.readLines()
+            FileInputStream(file).use {
+                it.reader().use { reader ->
+                    reader.forEachLine { str ->
+                        courses.add(toCourse(str))
+                    }
                 }
             }
-            content.forEach { courses.add(stringToCourse(it)) }
         } catch (e: IOException) {
-            e.message?.let { Log.d("ERROR", it) }
+            Log.e("CourseRepositoryFileBased: reading", e.message, e)
         }
+
+        Log.i("Repository findAll", "Courses: $courses")
         return courses
     }
 
-    private fun stringToCourse(courseString: String): Course {
-        val attributeList = courseString.split(separator)
-        return Course(parseInt(attributeList[0]), attributeList[1], parseInt(attributeList[2]))
-    }
-
     override fun get(id: Int): Course? {
-        val courses = findAll()
-        if (findAll().isEmpty()) {
-            return null
-        }
-        return courses.firstOrNull { it.id == id }
+        return findAll().firstOrNull { it.id == id }
     }
 
     override fun save(courses: MutableList<Course>): Boolean {
         try {
-            FileOutputStream(fileName).use { fileOutputStream ->
-                fileOutputStream.bufferedWriter().use { bufferedWriter ->
-                    courses.forEach {
-                        bufferedWriter.write(courseToString(it))
-                        bufferedWriter.newLine();
+            context.openFileOutput(file, Context.MODE_PRIVATE).use {
+                it.bufferedWriter().use { writer ->
+                    courses.forEach { course ->
+                        writer.write(toDb(course))
+                        writer.newLine()
                     }
                 }
             }
             return true
-
         } catch (e: IOException) {
-            e.message?.let { Log.d("ERROR", it) }
+            Log.e("CourseRepositoryFileBased: writing", e.message, e)
             return false
         }
     }
 
-    private fun courseToString(course: Course): String {
+    private fun toDb(course: Course): String {
         return "${course.id}$separator${course.name}$separator${course.credits}"
     }
 
     override fun delete(id: Int) {
-        val course = findAll().firstOrNull { it.id == id }
-
-        if (course != null) {
-            val courses = findAll().toMutableList();
-            courses.remove(course)
-            try {
-                FileOutputStream(fileName).use { fileOutputStream ->
-                    fileOutputStream.bufferedWriter().use { writer ->
-                        courses.forEach {
-                            writer.write(courseToString(it))
-                            writer.newLine()
-                        }
-                    }
-                }
-            } catch (e: IOException) {
-                e.message?.let { Log.d("ERROR", it) }
-            }
+        val courses = findAll().toMutableList()
+        val x = courses.removeIf { it.id == id }
+        if (!x) {
+            Log.e("CourseRepositoryFileBased: deleting", "Course not found")
         }
     }
 }

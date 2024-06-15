@@ -16,9 +16,6 @@ import com.jarabrama.promedium.ui.theme.PromediumTheme
 import com.jarabrama.promedium.ui.viewModel.NewCourseViewModel
 
 class MainActivity : ComponentActivity() {
-    private val fileAddress: String = "courses.txt"
-    private val separator: String = "|"
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,11 +23,11 @@ class MainActivity : ComponentActivity() {
         setContent {
             PromediumTheme {
                 val navController = rememberNavController()
-                val courseRepository = CourseRepositoryFileBased(fileAddress, separator)
+                val courseRepository = CourseRepositoryFileBased(this)
                 val courseService = CourseServiceImpl(courseRepository)
                 val courseViewModel = CourseViewModel(courseService, navController)
                 val newCourseViewModel = NewCourseViewModel(courseService = courseService, navController = navController)
-                
+
                 NavHost(navController = navController, startDestination = "courses"){
                     composable(route = "courses"){
                         CourseScreen(viewModel = courseViewModel)

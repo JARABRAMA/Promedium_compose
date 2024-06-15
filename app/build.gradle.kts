@@ -87,7 +87,8 @@ dependencies {
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     testRuntimeOnly(libs.junit.jupiter.engine)
-
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.eventbus)
 
 }
 

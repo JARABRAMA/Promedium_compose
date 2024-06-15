@@ -1,13 +1,15 @@
 package com.jarabrama.promedium.service.impl
 
+import android.util.Log
 import com.jarabrama.promedium.exceptions.CourseException
 import com.jarabrama.promedium.exceptions.CourseNotFoundException
-import com.jarabrama.promedium.exceptions.CoursesNotFoundException
 import com.jarabrama.promedium.model.Course
 import com.jarabrama.promedium.repository.CourseRepository
 import com.jarabrama.promedium.service.CourseService
 
+
 class CourseServiceImpl(private val courseRepository: CourseRepository) : CourseService {
+
     override fun findAll(): List<Course> {
         val courses = courseRepository.findAll();
         return courses
@@ -21,6 +23,7 @@ class CourseServiceImpl(private val courseRepository: CourseRepository) : Course
         if (!save) {
             throw CourseException("Can not save the curse")
         }
+        Log.i("Course Service: Adding Course", "course added $course")
         return course
     }
 
@@ -48,7 +51,7 @@ class CourseServiceImpl(private val courseRepository: CourseRepository) : Course
     }
 
     override fun getAverage(): Double {
-        var average: Double = 0.0;
+        val average = 0.0;
         //todo(no yet implemented )
         return average
     }

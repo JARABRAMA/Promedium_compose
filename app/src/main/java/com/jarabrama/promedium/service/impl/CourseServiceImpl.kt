@@ -1,8 +1,8 @@
 package com.jarabrama.promedium.service.impl
 
 import android.util.Log
-import com.jarabrama.promedium.exceptions.CourseException
-import com.jarabrama.promedium.exceptions.CourseNotFoundException
+import com.jarabrama.promedium.exceptions.courseExceptions.CourseException
+import com.jarabrama.promedium.exceptions.courseExceptions.CourseNotFoundException
 import com.jarabrama.promedium.model.Course
 import com.jarabrama.promedium.repository.CourseRepository
 import com.jarabrama.promedium.service.CourseService

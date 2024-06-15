@@ -1,4 +1,4 @@
-package com.jarabrama.promedium.exceptions
+package com.jarabrama.promedium.exceptions.courseExceptions
 
 open class CourseException(message: String): Exception(message) {
 }

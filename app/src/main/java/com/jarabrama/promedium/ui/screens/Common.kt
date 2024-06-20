@@ -1,14 +1,13 @@
 package com.jarabrama.promedium.ui.screens
 
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.PaddingValues
+
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.paddingFrom
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,23 +19,19 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.AlignmentLine
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jarabrama.promedium.R
-import com.jarabrama.promedium.ui.theme.big
 import com.jarabrama.promedium.ui.theme.bigPadding
 import com.jarabrama.promedium.ui.theme.normal
-import com.jarabrama.promedium.ui.theme.normalPadding
 
 import com.jarabrama.promedium.ui.theme.smallPadding
 
@@ -44,8 +39,7 @@ import com.jarabrama.promedium.ui.theme.smallPadding
 fun TopBar(title: String) {
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(bigPadding),
+            .fillMaxWidth(),
         shape = RoundedCornerShape(25),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -69,7 +63,7 @@ fun TextInput(
 ) {
     OutlinedTextField(
         value = value,
-        onValueChange = { onValueChange(it) } ,
+        onValueChange = { onValueChange(it) },
         keyboardOptions = KeyboardOptions(
             keyboardType = keyboardType,
         ),
@@ -118,14 +112,13 @@ fun FloatingButton(onClick: () -> Unit) {
     Button(
         onClick = { onClick() },
         colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.onPrimary,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
         ),
         contentPadding = smallPadding,
         modifier = Modifier
             .height(60.dp)
             .width(60.dp),
-        shape = RoundedCornerShape(20.dp)
     ) {
         Icon(
             painter = painterResource(id = R.drawable.add),
@@ -133,6 +126,27 @@ fun FloatingButton(onClick: () -> Unit) {
             modifier = Modifier
                 .fillMaxSize(1f)
         )
+    }
+}
+
+@Composable
+fun AverageBar(average: Double) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            ,
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        )
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            AverageCard(average = average)
+        }
     }
 }
 

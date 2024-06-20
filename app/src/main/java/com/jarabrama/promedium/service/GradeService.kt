@@ -7,4 +7,6 @@ interface GradeService {
     fun newGrade(courseId: Int, name: String, qualification: Double, percentage: Double): Grade
     fun update(grade: Grade): Grade
     fun delete(id: Int)
+    fun get(id: Int): Grade
+    fun getAverage(courseId: Int): Double
 }

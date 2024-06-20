@@ -1,5 +1,6 @@
 package com.jarabrama.promedium.service.impl
 
+import com.jarabrama.promedium.exceptions.courseExceptions.CourseNotFoundException
 import com.jarabrama.promedium.exceptions.gradeExceptions.GradeNotFoundException
 import com.jarabrama.promedium.exceptions.gradeExceptions.SavingGradeException
 import com.jarabrama.promedium.model.Grade
@@ -49,5 +50,11 @@ class GradeServiceImpl(private val gradeRepository: GradeRepository) : GradeServ
         val grades = gradeRepository.grades()
         grades.remove(foundedGrade)
         gradeRepository.save(grades = grades)
+    }
+
+    override fun get(id: Int): Grade = gradeRepository.get(id)?: throw CourseNotFoundException(id)
+
+    override fun getAverage(courseId: Int): Double {
+        return 0.0
     }
 }

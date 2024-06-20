@@ -1,9 +1,7 @@
 package com.jarabrama.promedium.ui.screens
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -13,20 +11,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -41,74 +37,54 @@ import com.jarabrama.promedium.ui.viewModel.CourseViewModel
 import com.jarabrama.promedium.ui.theme.bigPadding
 import com.jarabrama.promedium.ui.theme.normal
 import com.jarabrama.promedium.ui.theme.normalPadding
+import com.jarabrama.promedium.ui.theme.smallPadding
 
 @Composable
-fun CourseScreen(viewModel: CourseViewModel, ) {
+fun CourseScreen(viewModel: CourseViewModel) {
     val courses by viewModel.courses.observeAsState()
-
+    val average by viewModel.average.observeAsState()
     Scaffold(
         modifier = Modifier.systemBarsPadding(),
-        content = { courses?.let { courseList -> Content(paddingValues = it, courses = courseList) } },
+        content = {
+            courses?.let { courseList ->
+                CoursesColumn(
+                    paddingValues = it,
+                    courses = courseList
+                ) { courseId ->
+                    viewModel.onCourseClick(courseId)
+                }
+            }
+        },
         topBar = { TopBar(title = stringResource(id = R.string.app_name)) },
-        bottomBar = { CourseBottomBar { viewModel.onNewCourse() } }
+        bottomBar = { AverageBar(average = average ?: 0.0) },
+        floatingActionButton = { FloatingButton { viewModel.onNewCourse() } }
     )
 }
 
 @Composable
-fun CourseBottomBar(onClickListener: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(0.2f)
-            .padding(bigPadding),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-        )
+fun CoursesColumn(courses: List<Course>, paddingValues: PaddingValues, onItemClick: (Int) -> Unit) {
+    Column(
+        modifier = Modifier.padding(paddingValues)
     ) {
-        Row(
-            Modifier
+        Card(
+            modifier = Modifier
                 .fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.background
+            ),
+            shape = CutCornerShape(1.dp)
         ) {
-            AverageCard(average = 4.0)
-            FloatingButton(onClick = { onClickListener() })
-        }
-    }
-}
+            Column(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .fillMaxSize()
+                    .padding(),
+                horizontalAlignment = Alignment.CenterHorizontally
 
-@Composable
-fun Content(paddingValues: PaddingValues, courses: List<Course>) {
-    Box(
-        modifier = Modifier
-            .padding(paddingValues)
-            .fillMaxSize()
-    ) {
-        Row {
-            CoursesColumn(courses)
-        }
-    }
-}
-
-@Composable
-fun CoursesColumn(courses: List<Course>) {
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-        ),
-        modifier = Modifier
-            .padding(paddingValues = bigPadding)
-            .fillMaxWidth()
-            .fillMaxHeight()
-    ) {
-        Column(
-            modifier = Modifier.verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            courses.forEach { course ->
-                CourseItem(course)
+            ) {
+                courses.forEach { course ->
+                    CourseItem(course) { onItemClick(it) }
+                }
             }
         }
     }
@@ -118,24 +94,23 @@ fun CoursesColumn(courses: List<Course>) {
 @Composable
 fun PreviewCourse() {
     val course = Course(0, "Differential Equations", 3)
-    CourseItem(course)
+    CourseItem(course, {})
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CourseItem(course: Course) {
+fun CourseItem(course: Course, onItemClick: (Int) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(normalPadding),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-            contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
+            containerColor = MaterialTheme.colorScheme.background,
         ),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onBackground)
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onBackground),
+        onClick = { onItemClick(course.id) }
     ) {
-        Column(
-
-        ) {
+        Column {
             Text(text = course.name, modifier = Modifier.padding(normalPadding), fontSize = big)
             Row(
                 Modifier.fillMaxWidth(),
@@ -147,7 +122,6 @@ fun CourseItem(course: Course) {
             }
         }
     }
-
 }
 
 @Composable

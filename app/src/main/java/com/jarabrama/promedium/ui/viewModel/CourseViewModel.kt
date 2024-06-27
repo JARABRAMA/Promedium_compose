@@ -1,14 +1,12 @@
 package com.jarabrama.promedium.ui.viewModel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.jarabrama.promedium.model.Course
 import com.jarabrama.promedium.service.CourseService
-import com.jarabrama.promedium.utils.event.AddNewCourseEvent
 import com.jarabrama.promedium.utils.Utils
+import com.jarabrama.promedium.utils.event.AddNewCourseEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,14 +22,17 @@ class CourseViewModel(
 ) : ViewModel() {
     private val eventBus: EventBus = EventBus.getDefault()
 
-    private val _courses = MutableLiveData(listOf<Course>())
-    val courses: LiveData<List<Course>> = _courses
+    private val _courses = MutableStateFlow(listOf<Course>())
+    val courses = _courses.asStateFlow()
 
-    private val _average = MutableLiveData("")
-    val average: LiveData<String> = _average
+    private val _average = MutableStateFlow("")
+    val average = _average.asStateFlow()
 
     private val _showOptionsDialog = MutableStateFlow(false);
-    val showOptionsDialog = _showOptionsDialog.asStateFlow();
+    val showOptionsDialog = _showOptionsDialog.asStateFlow()
+
+    private val _courseSelected = MutableStateFlow(Course(-1, "", 0));
+    val courseSelected = _courseSelected.asStateFlow();
 
     init {
         eventBus.register(this)
@@ -63,16 +64,24 @@ class CourseViewModel(
         navController.navigate("grade/${courseId.toString()}")
     }
 
-    fun onLongCourseClick() {
+    fun onLongCourseClick(course: Course) {
         _showOptionsDialog.value = true
+        _courseSelected.value = course
     }
 
-    fun onEdit(courseId: Int){
+    fun onEdit(courseId: Int) {
         // Todo()
     }
 
     fun onDelete(courseId: Int) {
-        // Todo
+        viewModelScope.launch(Dispatchers.IO) {
+            courseService.delete(courseId)
+            val courses = async { courseService.findAll() }
+            withContext(Dispatchers.Main) {
+                _courses.value = courses.await()
+                _showOptionsDialog.value = false
+            }
+        }
     }
 
     fun onCloseDialog() {

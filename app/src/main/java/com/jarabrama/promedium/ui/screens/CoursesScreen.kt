@@ -19,7 +19,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -35,27 +34,27 @@ import com.jarabrama.promedium.ui.viewModel.CourseViewModel
 
 @Composable
 fun CourseScreen(viewModel: CourseViewModel) {
-    val courses by viewModel.courses.observeAsState()
-    val average by viewModel.average.observeAsState()
+    val courses by viewModel.courses.collectAsState()
+    val average by viewModel.average.collectAsState()
     val showDialog by viewModel.showOptionsDialog.collectAsState()
+    val courseSelected by viewModel.courseSelected.collectAsState()
 
     Scaffold(
         content = {
-            courses?.let { courseList ->
-                CoursesColumn(
-                    paddingValues = it,
-                    courses = courseList,
-                    onItemClick = { viewModel.onCourseClick(it) },
-                    onLongClick = { viewModel.onLongCourseClick() },
-                    showDialog = showDialog,
-                    onDelete = { viewModel.onDelete(it) },
-                    onEdit = { viewModel.onEdit(it) },
-                    onDismiss = { viewModel.onCloseDialog() }
-                )
-            }
+            CoursesColumn(
+                paddingValues = it,
+                courses = courses,
+                onItemClick = { courseId -> viewModel.onCourseClick(courseId) },
+                onLongClick = { course -> viewModel.onLongCourseClick(course) },
+                showDialog = showDialog,
+                onDelete = { courseId -> viewModel.onDelete(courseId) },
+                onEdit = { courseId -> viewModel.onEdit(courseId) },
+                onDismiss = { viewModel.onCloseDialog() },
+                courseSelected = courseSelected
+            )
         },
         topBar = { TopBar(title = stringResource(id = R.string.app_name)) },
-        bottomBar = { AverageBar(average = average ?: "0") },
+        bottomBar = { AverageBar(average = average) },
         floatingActionButton = { FloatingButton { viewModel.onNewCourse() } }
     )
 }
@@ -65,11 +64,12 @@ fun CoursesColumn(
     courses: List<Course>,
     paddingValues: PaddingValues,
     onItemClick: (Int) -> Unit,
-    onLongClick: () -> Unit,
+    onLongClick: (Course) -> Unit,
     showDialog: Boolean,
     onEdit: (Int) -> Unit,
     onDelete: (Int) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    courseSelected: Course
 ) {
     Column(
         modifier = Modifier.padding(paddingValues)
@@ -93,11 +93,13 @@ fun CoursesColumn(
                 courses.forEach { course ->
                     CourseItem(course,
                         onItemClick = { onItemClick(it) },
-                        onLongClick = { onLongClick() },
+                        onLongClick = { courseSelected -> onLongClick(courseSelected) },
                         showDialog = showDialog,
                         onEdit = { onEdit(it) },
                         onDelete = { onDelete(it) },
-                        onDismiss = { onDismiss() })
+                        onDismiss = { onDismiss() },
+                        selectedCourse = courseSelected
+                    )
                 }
             }
         }
@@ -109,11 +111,12 @@ fun CoursesColumn(
 fun CourseItem(
     course: Course,
     onItemClick: (Int) -> Unit,
-    onLongClick: () -> Unit,
+    onLongClick: (Course) -> Unit,
     showDialog: Boolean,
     onEdit: (Int) -> Unit,
     onDelete: (Int) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    selectedCourse: Course
 ) {
     Card(
         modifier = Modifier
@@ -121,7 +124,7 @@ fun CourseItem(
             .padding(normalPadding)
             .combinedClickable(
                 onClick = { onItemClick(course.id) },
-                onLongClick = { onLongClick() }
+                onLongClick = { onLongClick(course) }
             ),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.background,
@@ -143,7 +146,12 @@ fun CourseItem(
         }
 
         if (showDialog) {
-            OptionsCourse(onEdit = { onEdit(course.id) }, onDelete = { onDelete(course.id) }, onBack = {onDismiss()}, courseName = course.name)
+            OptionsCourse(
+                onEdit = { onEdit(selectedCourse.id) },
+                onDelete = { onDelete(selectedCourse.id) },
+                onBack = { onDismiss() },
+                courseName = selectedCourse.name
+            )
         }
     }
 }

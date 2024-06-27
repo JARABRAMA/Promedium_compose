@@ -83,5 +83,6 @@ class CourseRepositoryFileBased(private val context: Context) : CourseRepository
         if (!x) {
             Log.e("CourseRepositoryFileBased: deleting", "Course not found")
         }
+        save(courses)
     }
 }

@@ -11,6 +11,8 @@ import com.jarabrama.promedium.utils.event.AddNewCourseEvent
 import com.jarabrama.promedium.utils.Utils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
@@ -27,6 +29,9 @@ class CourseViewModel(
 
     private val _average = MutableLiveData("")
     val average: LiveData<String> = _average
+
+    private val _showOptionsDialog = MutableStateFlow(false);
+    val showOptionsDialog = _showOptionsDialog.asStateFlow();
 
     init {
         eventBus.register(this)
@@ -57,4 +62,22 @@ class CourseViewModel(
     fun onCourseClick(courseId: Int) {
         navController.navigate("grade/${courseId.toString()}")
     }
+
+    fun onLongCourseClick() {
+        _showOptionsDialog.value = true
+    }
+
+    fun onEdit(courseId: Int){
+        // Todo()
+    }
+
+    fun onDelete(courseId: Int) {
+        // Todo
+    }
+
+    fun onCloseDialog() {
+        _showOptionsDialog.value = false
+    }
+
+
 }

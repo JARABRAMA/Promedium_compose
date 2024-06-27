@@ -26,11 +26,9 @@ import com.jarabrama.promedium.ui.viewModel.CourseViewModel
 import com.jarabrama.promedium.ui.viewModel.GradeViewModel
 import com.jarabrama.promedium.ui.viewModel.NewCourseViewModel
 import com.jarabrama.promedium.ui.viewModel.NewGradeViewModel
-import com.jarabrama.promedium.ui.viewModel.OptionsCourseViewModel
 import com.jarabrama.promedium.utils.event.InvalidInputEvent
 import com.jarabrama.promedium.utils.navigation.GradeScreen
 import com.jarabrama.promedium.utils.navigation.NewGradeScreen
-import com.jarabrama.promedium.utils.navigation.OptionsCourseScreen
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
@@ -47,7 +45,6 @@ class MainActivity : ComponentActivity() {
     private lateinit var newCourseViewModel: NewCourseViewModel
     private lateinit var gradeViewModel: GradeViewModel;
     private lateinit var newGradeViewModel: NewGradeViewModel;
-    private lateinit var optionsCourseViewModel: OptionsCourseViewModel
 
     init {
         eventBus.register(this)
@@ -93,22 +90,10 @@ class MainActivity : ComponentActivity() {
                         )
                         NewGradeScreen(viewModel = newGradeViewModel)
                     }
-                    composable(
-                        route = OptionsCourseScreen.route,
-                        arguments = OptionsCourseScreen.arguments
-                    ) {
-                        val courseId = it.arguments?.getInt(OptionsCourseScreen.courseId) ?: 0
-                        optionsCourseViewModel = OptionsCourseViewModel(
-                            navController,
-                            courseId = courseId,
-                            courseService = courseService
-                        )
-                    }
                 }
             }
         }
     }
-
     @Subscribe
     fun onInvalidInputEvent(event: InvalidInputEvent) {
         Toast.makeText(this, event.message, Toast.LENGTH_SHORT).show()

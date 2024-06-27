@@ -12,4 +12,8 @@
     <string name="new_grade">Add a new Grade</string>
     <string name="grade_name">Grade Name</string>
     <string name="qualification_placeholder">write your qualification</string>
+    <string name="percentage_placeholder">write the percentage</string>
+    <string name="course_name">Course Name</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
 </resources>

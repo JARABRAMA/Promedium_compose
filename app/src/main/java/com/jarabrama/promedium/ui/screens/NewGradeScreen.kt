@@ -3,11 +3,13 @@ package com.jarabrama.promedium.ui.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
-import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,8 +22,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jarabrama.promedium.R
-import com.jarabrama.promedium.ui.theme.big
 import com.jarabrama.promedium.ui.theme.bigPadding
+import com.jarabrama.promedium.ui.theme.extraLarge
 import com.jarabrama.promedium.ui.theme.normal
 import com.jarabrama.promedium.ui.theme.small
 import com.jarabrama.promedium.ui.theme.smallPadding
@@ -37,13 +39,20 @@ fun NewGradeScreen(viewModel: NewGradeViewModel) {
         FormNewGrade(
             paddingValues = it,
             nameValue = name,
-            percentageValue = percentage.toString(),
-            qualificationValue = qualification.toString(),
+            percentageValue = percentage,
+            qualificationValue = qualification,
             onNameChange = { nameValue -> viewModel.onNameChange(nameValue) },
             onPercentageChange = { percentageValue -> viewModel.onPercentageChange(percentageValue) },
             onQualificationChange = { qualificationValue ->
                 viewModel.onQualificationChange(
                     qualificationValue
+                )
+            },
+            onSave = { name, qualification, percentage ->
+                viewModel.onCreteGrade(
+                    name,
+                    qualification,
+                    percentage
                 )
             }
         )
@@ -58,7 +67,8 @@ fun FormNewGrade(
     qualificationValue: String,
     onNameChange: (String) -> Unit,
     onQualificationChange: (String) -> Unit,
-    onPercentageChange: (String) -> Unit
+    onPercentageChange: (String) -> Unit,
+    onSave: (String, String, String) -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -67,7 +77,10 @@ fun FormNewGrade(
             .fillMaxSize()
             .padding(paddingValues)
     ) {
-        Card(modifier = Modifier.padding(bigPadding)) {
+        Card(
+            modifier = Modifier.padding(bigPadding),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+        ) {
             Column(Modifier.padding(smallPadding)) {
 
                 TitleColumn()
@@ -77,7 +90,8 @@ fun FormNewGrade(
                     qualificationValue,
                     onNameChange,
                     onQualificationChange,
-                    onPercentageChange
+                    onPercentageChange,
+                    onSave
                 )
             }
         }
@@ -91,14 +105,11 @@ fun FormColumn(
     qualificationValue: String,
     onNameChange: (String) -> Unit,
     onQualificationChange: (String) -> Unit,
-    onPercentageChange: (String) -> Unit
+    onPercentageChange: (String) -> Unit,
+    onSave: (String, String, String) -> Unit
 ) {
     Column(Modifier.padding(PaddingValues(top = 10.dp))) {
-        Text(
-            text = stringResource(R.string.grade_name),
-            fontSize = normal,
-            modifier = Modifier.padding(smallPadding)
-        )
+        TextForm(stringResource(R.string.grade_name))
         TextInput(
             value = nameValue,
             onValueChange = onNameChange,
@@ -107,43 +118,46 @@ fun FormColumn(
                 id = R.string.grade_name_placeholder
             )
         )
-        NumberInput(
+        TextForm(stringResource(R.string.qualification))
+        TextInput(
             value = qualificationValue,
-            onValueChange = { onQualificationChange(it) }
+            onValueChange = { newQualificationValue -> onQualificationChange(newQualificationValue) },
+            keyboardType = KeyboardType.Decimal,
+            placeholder = stringResource(R.string.qualification_placeholder)
         )
+        TextForm(stringResource(R.string.percentage))
+        TextInput(
+            value = percentageValue,
+            onValueChange = { newPercentageValue -> onPercentageChange(newPercentageValue) },
+            keyboardType = KeyboardType.Decimal,
+            placeholder = stringResource(R.string.percentage_placeholder)
+        )
+
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+            SaveButton {
+                onSave(nameValue, qualificationValue, percentageValue)
+            }
+        }
     }
 }
 
 @Composable
-fun NumberInput(value: String, onValueChange: (String) -> Unit) {
-    OutlinedTextField(
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Decimal
-        ),
-        value = value,
-        onValueChange = { newValue -> onValueChange(newValue) },
-
-    )
+fun TextForm(message: String) {
+    Text(text = message, fontSize = normal, modifier = Modifier.padding(smallPadding))
 }
 
 
 @Composable
 @Preview
 fun TitleColumn() {
-    Column {
+    Column(Modifier.padding(smallPadding)) {
         Text(
             text = stringResource(R.string.new_grade),
-            fontSize = big,
-            modifier = Modifier.padding(
-                smallPadding
-            )
+            fontSize = extraLarge,
         )
         Text(
             text = "Enter the grade's details",
             fontSize = small,
-            modifier = Modifier.padding(
-                smallPadding
-            )
         )
     }
 }

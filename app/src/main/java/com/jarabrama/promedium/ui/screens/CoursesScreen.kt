@@ -1,11 +1,9 @@
 package com.jarabrama.promedium.ui.screens
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,7 +11,6 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,18 +30,17 @@ import androidx.compose.ui.unit.dp
 import com.jarabrama.promedium.R
 import com.jarabrama.promedium.model.Course
 import com.jarabrama.promedium.ui.theme.big
-import com.jarabrama.promedium.ui.viewModel.CourseViewModel
-import com.jarabrama.promedium.ui.theme.bigPadding
 import com.jarabrama.promedium.ui.theme.normal
 import com.jarabrama.promedium.ui.theme.normalPadding
+import com.jarabrama.promedium.ui.theme.small
 import com.jarabrama.promedium.ui.theme.smallPadding
+import com.jarabrama.promedium.ui.viewModel.CourseViewModel
 
 @Composable
 fun CourseScreen(viewModel: CourseViewModel) {
     val courses by viewModel.courses.observeAsState()
     val average by viewModel.average.observeAsState()
     Scaffold(
-        modifier = Modifier.systemBarsPadding(),
         content = {
             courses?.let { courseList ->
                 CoursesColumn(
@@ -56,7 +52,7 @@ fun CourseScreen(viewModel: CourseViewModel) {
             }
         },
         topBar = { TopBar(title = stringResource(id = R.string.app_name)) },
-        bottomBar = { AverageBar(average = average ?: 0.0) },
+        bottomBar = { AverageBar(average = average?: "0") },
         floatingActionButton = { FloatingButton { viewModel.onNewCourse() } }
     )
 }
@@ -90,13 +86,6 @@ fun CoursesColumn(courses: List<Course>, paddingValues: PaddingValues, onItemCli
     }
 }
 
-@Preview
-@Composable
-fun PreviewCourse() {
-    val course = Course(0, "Differential Equations", 3)
-    CourseItem(course, {})
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CourseItem(course: Course, onItemClick: (Int) -> Unit) {
@@ -107,8 +96,10 @@ fun CourseItem(course: Course, onItemClick: (Int) -> Unit) {
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.background,
         ),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onBackground),
-        onClick = { onItemClick(course.id) }
+        onClick = { onItemClick(course.id) },
+        elevation = CardDefaults.elevatedCardElevation(
+            defaultElevation = 5.dp
+        )
     ) {
         Column {
             Text(text = course.name, modifier = Modifier.padding(normalPadding), fontSize = big)

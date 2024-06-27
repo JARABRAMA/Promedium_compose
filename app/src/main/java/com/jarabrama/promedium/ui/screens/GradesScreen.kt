@@ -9,12 +9,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -22,8 +24,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.jarabrama.promedium.R
 import com.jarabrama.promedium.model.Grade
 import com.jarabrama.promedium.ui.theme.big
@@ -39,17 +44,55 @@ fun GradesScreen(viewModel: GradeViewModel) {
     val grades by viewModel.grades.collectAsState()
     val average by viewModel.average.collectAsState()
     Scaffold(
-        modifier = Modifier.systemBarsPadding(),
         content = { GradeList(it, grades) },
-        topBar = { TopBar(title = name) },
-        floatingActionButton = { FloatingButton {
-            viewModel.onNewGrade()
-        } },
+        topBar = {
+            TopAppBarGrade(title = name) {
+                viewModel.onBack()
+            }
+        },
+        floatingActionButton = {
+            FloatingButton {
+                viewModel.onNewGrade()
+            }
+        },
         bottomBar = { AverageBar(average) }
     )
 }
 
+@Preview
+@Composable
+fun TopAppBarGradePreview() {
+     TopAppBarGrade(title = "Programming techniques") {}
+}
 
+@Composable
+fun TopAppBarGrade(title: String, onBack: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .systemBarsPadding(),
+        shape = RoundedCornerShape(25),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        ),
+    ) {
+        Row (
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            BackButton(
+                onClick = { onBack() },
+                containerColor = MaterialTheme.colorScheme.primaryContainer
+            )
+            Text(
+                text = title,
+                fontSize = big,
+                modifier = Modifier.padding(smallPadding),
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
@@ -61,7 +104,7 @@ fun GradeListPreview() {
         Grade(1, 2, "parcial 4", 3.5, 40.0),
         Grade(1, 2, "parcial 3", 6.5, 50.0),
         Grade(1, 2, "parcial 3", 6.5, 50.0),
-        )
+    )
 
     GradeList(paddingValues = normalPadding, courses)
 }
@@ -94,8 +137,10 @@ fun GradeItem(grade: Grade) {
             .fillMaxWidth()
             .padding(smallPadding),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            containerColor = MaterialTheme.colorScheme.background,
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 5.dp
         )
     ) {
         Column(modifier = Modifier.padding(smallPadding)) {

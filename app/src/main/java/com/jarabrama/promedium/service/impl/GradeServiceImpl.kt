@@ -2,10 +2,11 @@ package com.jarabrama.promedium.service.impl
 
 import com.jarabrama.promedium.exceptions.courseExceptions.CourseNotFoundException
 import com.jarabrama.promedium.exceptions.gradeExceptions.GradeNotFoundException
+import com.jarabrama.promedium.exceptions.gradeExceptions.InvalidPercentageException
 import com.jarabrama.promedium.exceptions.gradeExceptions.SavingGradeException
 import com.jarabrama.promedium.model.Grade
-import com.jarabrama.promedium.service.GradeService;
 import com.jarabrama.promedium.repository.GradeRepository
+import com.jarabrama.promedium.service.GradeService
 
 class GradeServiceImpl(private val gradeRepository: GradeRepository) : GradeService {
 
@@ -17,6 +18,15 @@ class GradeServiceImpl(private val gradeRepository: GradeRepository) : GradeServ
         qualification: Double,
         percentage: Double
     ): Grade {
+        // percentage validation
+        val restingPercentage = 100.0 - (findAll(courseId).sumOf { it.percentage })
+        if (percentage > restingPercentage) {
+            throw InvalidPercentageException (
+                restingPercentage = restingPercentage,
+                inputPercentage = percentage
+            )
+        }
+
         val grades: MutableList<Grade> = gradeRepository.grades()
         val newGrade = Grade(
             id = grades.size,
@@ -52,9 +62,9 @@ class GradeServiceImpl(private val gradeRepository: GradeRepository) : GradeServ
         gradeRepository.save(grades = grades)
     }
 
-    override fun get(id: Int): Grade = gradeRepository.get(id)?: throw CourseNotFoundException(id)
+    override fun get(id: Int): Grade = gradeRepository.get(id) ?: throw CourseNotFoundException(id)
 
     override fun getAverage(courseId: Int): Double {
-        return 0.0
+        return findAll(courseId).sumOf { it.qualification * (it.percentage / 100) }
     }
 }

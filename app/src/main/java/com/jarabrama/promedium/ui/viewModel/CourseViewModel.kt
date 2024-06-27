@@ -8,12 +8,9 @@ import androidx.navigation.NavController
 import com.jarabrama.promedium.model.Course
 import com.jarabrama.promedium.service.CourseService
 import com.jarabrama.promedium.utils.event.AddNewCourseEvent
-import com.jarabrama.promedium.utils.navigation.GradeScreen
+import com.jarabrama.promedium.utils.Utils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
@@ -28,13 +25,13 @@ class CourseViewModel(
     private val _courses = MutableLiveData(listOf<Course>())
     val courses: LiveData<List<Course>> = _courses
 
-    private val _average = MutableLiveData(0.0)
-    val average: LiveData<Double> = _average
+    private val _average = MutableLiveData("")
+    val average: LiveData<String> = _average
 
     init {
         eventBus.register(this)
         viewModelScope.launch(Dispatchers.IO) {
-            val average = async { courseService.getAverage() }
+            val average = async { Utils.numberFormat(courseService.getAverage()) }
             val courses = async { courseService.findAll() }
             withContext(Dispatchers.Main) {
                 _average.value = average.await()
@@ -47,7 +44,7 @@ class CourseViewModel(
     fun onCourseAdded(event: AddNewCourseEvent) {
         viewModelScope.launch(Dispatchers.IO) {
             val courses = async { courseService.findAll(); }
-            withContext(Dispatchers.Main){
+            withContext(Dispatchers.Main) {
                 _courses.value = courses.await();
             }
         }

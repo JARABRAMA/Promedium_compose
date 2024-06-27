@@ -106,14 +106,14 @@ fun FormNewCourse(
                 .fillMaxSize()
                 .padding(normalPadding),
         ) {
-            Text(text = "Course Name", fontSize = normal, modifier = Modifier.padding(smallPadding))
+            Text(text = stringResource(R.string.course_name), fontSize = normal, modifier = Modifier.padding(smallPadding))
             TextInput(
                 value = nameValue,
                 onValueChange = { onNameChange(it) },
                 keyboardType = KeyboardType.Text,
                 placeholder = stringResource(id = R.string.name_course_placeholder)
             )
-            Text(text = "Course Name", fontSize = normal, modifier = Modifier.padding(smallPadding))
+            Text(text = stringResource(id = R.string.credits), fontSize = normal, modifier = Modifier.padding(smallPadding))
             TextInput(
                 value = creditsValue,
                 onValueChange = { onCreditsChange(it) },
@@ -128,20 +128,6 @@ fun FormNewCourse(
                 SaveButton(onSaved = { onSaved() })
             }
         }
-    }
-}
-
-
-@Composable
-fun SaveButton(onSaved: () -> Unit) {
-    Button(
-        modifier = Modifier.padding(smallPadding),
-        onClick = { onSaved() }, colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.onPrimary,
-            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-        )
-    ) {
-        Text(text = stringResource(id = R.string.save))
     }
 }
 

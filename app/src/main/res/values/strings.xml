@@ -5,4 +5,15 @@
     <string name="name_course_placeholder">Name of the course</string>
     <string name="credits_placeholder">Credits of the course</string>
     <string name="save">Save</string>
+    <string name="qualification">Qualification</string>
+    <string name="percentage">Percentage</string>
+    <string name="average">Average</string>
+    <string name="grade_name_placeholder">Write the name of the grade</string>
+    <string name="new_grade">Add a new Grade</string>
+    <string name="grade_name">Grade Name</string>
+    <string name="qualification_placeholder">write your qualification</string>
+    <string name="percentage_placeholder">write the percentage</string>
+    <string name="course_name">Course Name</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
 </resources>

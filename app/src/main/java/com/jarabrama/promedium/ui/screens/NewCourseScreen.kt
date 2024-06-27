@@ -2,6 +2,7 @@ package com.jarabrama.promedium.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +13,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -33,22 +35,44 @@ import com.jarabrama.promedium.ui.viewModel.NewCourseViewModel
 fun NewCourseScreen(viewModel: NewCourseViewModel) {
     val courseName by viewModel.courseName.collectAsState()
     val credits by viewModel.courseCredits.collectAsState()
+
+    Scaffold {
+        Form(
+            courseName = courseName,
+            credits = credits,
+            onCreditsChange = { credits -> viewModel.onCreditsChange(credits) },
+            onAddCourse = { viewModel.onAddCourse() },
+            onNameChange = { name -> viewModel.onNameChange(name) },
+            paddingValues = it
+        )
+    }
+}
+
+@Composable
+private fun Form(
+    courseName: String,
+    credits: String,
+    onNameChange: (String) -> Unit,
+    onCreditsChange: (String) -> Unit,
+    onAddCourse: () -> Unit,
+    paddingValues: PaddingValues
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
     ) {
         FormNewCourse(
             nameValue = courseName,
             creditsValue = credits,
-            onNameChange = { viewModel.onNameChange(it) },
-            onCreditsChange = { viewModel.onCreditsChange(it) },
-            onSaved = { viewModel.onAddCourse() }
+            onNameChange = { onNameChange(it) },
+            onCreditsChange = { onCreditsChange(it) },
+            onSaved = { onAddCourse() }
         )
     }
-
 }
-
 
 @Composable
 fun FormNewCourse(
@@ -58,7 +82,6 @@ fun FormNewCourse(
     onCreditsChange: (String) -> Unit,
     onSaved: () -> Unit
 ) {
-
     Card(
         modifier = Modifier
             .fillMaxWidth(0.9f)
@@ -67,7 +90,6 @@ fun FormNewCourse(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             contentColor = MaterialTheme.colorScheme.onPrimaryContainer
         )
-
     )
     {
         Column(
@@ -84,14 +106,14 @@ fun FormNewCourse(
                 .fillMaxSize()
                 .padding(normalPadding),
         ) {
-            Text(text = "Course Name", fontSize = normal, modifier = Modifier.padding(smallPadding))
+            Text(text = stringResource(R.string.course_name), fontSize = normal, modifier = Modifier.padding(smallPadding))
             TextInput(
                 value = nameValue,
                 onValueChange = { onNameChange(it) },
                 keyboardType = KeyboardType.Text,
                 placeholder = stringResource(id = R.string.name_course_placeholder)
             )
-            Text(text = "Course Name", fontSize = normal, modifier = Modifier.padding(smallPadding))
+            Text(text = stringResource(id = R.string.credits), fontSize = normal, modifier = Modifier.padding(smallPadding))
             TextInput(
                 value = creditsValue,
                 onValueChange = { onCreditsChange(it) },
@@ -105,23 +127,7 @@ fun FormNewCourse(
             ) {
                 SaveButton(onSaved = { onSaved() })
             }
-
         }
-    }
-
-}
-
-
-@Composable
-fun SaveButton(onSaved: () -> Unit) {
-    Button(
-        modifier = Modifier.padding(smallPadding),
-        onClick = { onSaved() }, colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.onPrimary,
-            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-        )
-    ) {
-        Text(text = stringResource(id = R.string.save))
     }
 }
 

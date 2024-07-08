@@ -18,22 +18,25 @@ import com.jarabrama.promedium.service.GradeService
 import com.jarabrama.promedium.service.impl.CourseServiceImpl
 import com.jarabrama.promedium.service.impl.GradeServiceImpl
 import com.jarabrama.promedium.ui.screens.CourseScreen
+import com.jarabrama.promedium.ui.screens.EditCourseScreen
 import com.jarabrama.promedium.ui.screens.GradesScreen
 import com.jarabrama.promedium.ui.screens.NewCourseScreen
 import com.jarabrama.promedium.ui.screens.NewGradeScreen
 import com.jarabrama.promedium.ui.theme.PromediumTheme
 import com.jarabrama.promedium.ui.viewModel.CourseViewModel
+import com.jarabrama.promedium.ui.viewModel.EditCourseViewModel
 import com.jarabrama.promedium.ui.viewModel.GradeViewModel
 import com.jarabrama.promedium.ui.viewModel.NewCourseViewModel
 import com.jarabrama.promedium.ui.viewModel.NewGradeViewModel
 import com.jarabrama.promedium.utils.event.InvalidInputEvent
+import com.jarabrama.promedium.utils.navigation.EditCourseScreen
 import com.jarabrama.promedium.utils.navigation.GradeScreen
 import com.jarabrama.promedium.utils.navigation.NewGradeScreen
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
 class MainActivity : ComponentActivity() {
-    private val eventBus = EventBus.getDefault();
+    private val eventBus = EventBus.getDefault()
     private lateinit var navController: NavHostController
 
     private lateinit var courseRepository: CourseRepository
@@ -43,8 +46,9 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var courseViewModel: CourseViewModel
     private lateinit var newCourseViewModel: NewCourseViewModel
-    private lateinit var gradeViewModel: GradeViewModel;
-    private lateinit var newGradeViewModel: NewGradeViewModel;
+    private lateinit var gradeViewModel: GradeViewModel
+    private lateinit var newGradeViewModel: NewGradeViewModel
+    private lateinit var editCourseViewModel: EditCourseViewModel
 
     init {
         eventBus.register(this)
@@ -89,6 +93,10 @@ class MainActivity : ComponentActivity() {
                             gradeService, courseId, navController
                         )
                         NewGradeScreen(viewModel = newGradeViewModel)
+                    }
+                    composable(route = EditCourseScreen.route, arguments = EditCourseScreen.arguments) {
+                        val courseId: Int = it.arguments?.getInt(NewGradeScreen.courseId) ?: 0
+                        editCourseViewModel = EditCourseViewModel(courseService, navController, courseId)
                     }
                 }
             }

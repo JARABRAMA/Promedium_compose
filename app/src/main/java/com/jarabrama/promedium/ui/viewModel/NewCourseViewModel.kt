@@ -54,4 +54,8 @@ class NewCourseViewModel(
             e.message ?: let { Log.e("ERROR", "on add course ${e.message}") }
         }
     }
+
+    fun onBack() {
+        navController.popBackStack()
+    }
 }

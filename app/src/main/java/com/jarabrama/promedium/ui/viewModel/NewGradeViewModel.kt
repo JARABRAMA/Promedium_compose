@@ -57,7 +57,7 @@ class NewGradeViewModel(
     }
 
     private fun goBack() {
-        navController.navigate("grade/${courseId.toString()}")
+        navController.popBackStack()
     }
 
     fun onNameChange(name: String) {
@@ -78,5 +78,9 @@ class NewGradeViewModel(
         } catch (e: FormatException) {
             Log.e("onPercentageChange", e.message, e)
         }
+    }
+
+    fun onBack() {
+        navController.popBackStack()
     }
 }
